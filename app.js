@@ -1,17 +1,3 @@
-function makeNewRow(trainName, destination, firstTrain, frequency){
-var militaryTime = "HH:MM";
-var convertedTime = moment(militaryTime);
-console.log(convertedTime);
-
-
-   var newRow = $('<tr>'+
-   'class="col-2">'+trainName+'</td>'+
-   '<td class="col-2">'+destination+'</td>'+
-   '<td class="col-2">'+frequency+'</td>'+
-   '<td class="col-2">'+firstTrain+'</td>'+
-   '</tr>');
-   $("#employee-list").append(newRow);
-}
 
   // Initialize Firebase
   var config = {
@@ -24,20 +10,40 @@ console.log(convertedTime);
   };
   firebase.initializeApp(config);
   
-  let database = firebase.database();
+  var database = firebase.database();
 
 $("#submit").on("click", function(event){
     event.preventDefault();
-    var data = {
-    trainName : $("#trainName").val(),
-    destination : $("#destination").val(),
-    firstTrain : $("#firstTrain").val(),
-    frequency : $("#frequency").val(),
+
+    var trainName = $("#trainName").val();
+    var destination = $("#destination").val();
+    var firstTrain = $("#firstTrain").val().trim();
+    var frequency = $("#frequency").val().trim();
+
+    var newTrain = {
+      trainName: trainTrainName,
+      destination: trainDestination,
+      firstTrain: trainFirstTrain,
+      frequency: trainFrequency,
     };
-    database.ref().push(data);            
+    database.ref().push(newTrain);
+
+    $("#trainName").val("");
+    $("#destination").val("");
+    $("#firstTrain").val("");
+    $("#frequency").val("");
 });
 
-database.ref().on("child_added", function(snapshot){
-    snapshot.val().name
+database.ref().on("child_added", function(childSnapshot) {
+    var trainTrainName = childSnapshot.val().trainName;
+    var trainDestination = childSnapshot.val().destination;
+    var trainFirstTrain = childSnapshot.val().firstTrain;
+    var trainFrequency = childSnapshot.val().frequency;
+
+    //var empStartPretty = moment.unix().format("HH:mm")
+
+    $("#trainList > tbody").append("<tr><td>" + trainTrainName + "</td><td>" + trainDestination + "</td><td>" +
+    trainFirstTrain + "</td><td>" + trainFrequency + "</td></tr>");
+
     
 });
